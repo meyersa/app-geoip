@@ -1,0 +1,14 @@
+name: On Push
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  checks:
+    uses: meyerstk/iac-ci/.github/workflows/reusable-on-push.yml@main
