@@ -8,7 +8,7 @@ packages = [{ include = "geoip", from = "src" }]
 
 [tool.poetry.dependencies]
 python = ">=3.11,<4.0"
-fastapi = "^0.115.6"
+fastapi = "^0.140.7"
 granian = { extras = ["reload"], version = ">=2.0,<3.0" }
 httpx = "^0.28.1"
 geoip2 = "^5.2.0"
