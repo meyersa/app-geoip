@@ -45,6 +45,7 @@ Default persistent cache paths are under `/data/GeoIP`:
 
 - `MAXMIND_CACHE_DIR=/data/GeoIP/maxmind`
 - `NATURAL_EARTH_CACHE_DIR=/data/GeoIP/natural-earth`
+- `MAP_IMAGE_CACHE_DIR=/data/GeoIP/maps`
 
 For local tests, `.env` may point these caches at `/tmp`.
 

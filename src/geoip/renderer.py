@@ -13,10 +13,9 @@ from geoip.config import Settings
 
 WEB_MERCATOR_LATITUDE_LIMIT = 85.0511
 COLOR_LAND = "#7E8987"
-COLOR_WATER = "#B1F8F2"
+COLOR_WATER = "#FFFFFF"
 COLOR_ICON = "#D1495B"
 COLOR_TEXT = "#0A0A0A"
-COLOR_PANEL = "#F4F5F5"
 COLOR_BOUNDARY = "#F4F5F5"
 
 
@@ -216,26 +215,23 @@ def draw_label(
     subtitle = f"{longitude:.4f}, {latitude:.4f}"
     place = place_name or "Unknown location"
 
-    padding = 24
-    title_font = font(34)
-    subtitle_font = font(20)
-    place_font = font(26)
-    title_box = draw.textbbox((0, 0), title, font=title_font)
-    subtitle_box = draw.textbbox((0, 0), subtitle, font=subtitle_font)
-    place_box = draw.textbbox((0, 0), place, font=place_font)
-    box_width = max(title_box[2], subtitle_box[2], place_box[2]) + padding * 2
-    box_height = 132
+    title_font = font(68, bold=True)
+    subtitle_font = font(40)
+    place_font = font(52)
+    label_height = 240
     x = 24
-    y = image_height - box_height - 24
+    y = image_height - label_height - 24
 
-    draw.rounded_rectangle((x, y, x + box_width, y + box_height), radius=8, fill=COLOR_PANEL, outline="#cdd1d1")
-    draw.text((x + padding, y + 16), title, fill=COLOR_TEXT, font=title_font)
-    draw.text((x + padding, y + 58), subtitle, fill=COLOR_TEXT, font=subtitle_font)
-    draw.text((x + padding, y + 88), place, fill=COLOR_TEXT, font=place_font)
+    draw.text((x, y + 12), title, fill=COLOR_ICON, font=title_font)
+    draw.text((x, y + 94), subtitle, fill=COLOR_TEXT, font=subtitle_font)
+    draw.text((x, y + 148), place, fill=COLOR_TEXT, font=place_font)
 
 
-def font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
-    try:
-        return ImageFont.truetype("Arial.ttf", size=size)
-    except OSError:
-        return ImageFont.load_default()
+def font(size: int, *, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+    candidates = ("Arial Bold.ttf", "Arial.ttf") if bold else ("Arial.ttf",)
+    for candidate in candidates:
+        try:
+            return ImageFont.truetype(candidate, size=size)
+        except OSError:
+            continue
+    return ImageFont.load_default()

@@ -11,6 +11,7 @@ from loguru import logger
 from pydantic import ValidationError
 
 from geoip.config import Settings, get_settings
+from geoip.image_cache import cache_key, map_cache_payload, read_cached_image, write_cached_image
 from geoip.logging import configure_logging
 from geoip.maxmind import MaxmindLookupError, ensure_maxmind_database, lookup_ip
 from geoip.renderer import ensure_natural_earth, render_map
@@ -99,18 +100,38 @@ async def map_ip(
     runtime = runtime_state(request)
     data = await get_ip_data(ip, settings, runtime)
     coordinates = data["_geoip"]
+    ip_label = data.get("traits", {}).get("ip_address", ip)
+    place = place_name(data)
+    key = cache_key(
+        map_cache_payload(
+            settings,
+            ip_label,
+            coordinates["latitude"],
+            coordinates["longitude"],
+            place,
+        )
+    )
+    cached_image = read_cached_image(settings, key)
+    if cached_image is not None:
+        return Response(content=cached_image, media_type="image/png")
+
     try:
         image = render_map(
             settings,
-            data.get("traits", {}).get("ip_address", ip),
+            ip_label,
             coordinates["latitude"],
             coordinates["longitude"],
-            place_name(data),
+            place,
             runtime.get("natural_earth_datasets"),
         )
     except ValueError as exc:
         logger.error("Map render failed for {}: {}", ip, exc)
         raise HTTPException(status_code=502, detail=str(exc)) from exc
+
+    try:
+        write_cached_image(settings, key, image)
+    except OSError as exc:
+        logger.warning("Could not write map image cache entry {}: {}", key, exc)
 
     logger.info("Rendered map for {}", ip)
     return Response(content=image, media_type="image/png")

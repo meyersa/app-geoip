@@ -27,6 +27,8 @@ class Settings(BaseSettings):
         default="https://naturalearth.s3.amazonaws.com/50m_physical/ne_50m_lakes.zip",
         alias="NATURAL_EARTH_LAKES_URL",
     )
+    map_image_cache_dir: str = Field(default="/data/GeoIP/maps", alias="MAP_IMAGE_CACHE_DIR")
+    map_image_cache_ttl_seconds: int = Field(default=86400, alias="MAP_IMAGE_CACHE_TTL_SECONDS")
     map_zoom_degrees: float = Field(default=12.0, alias="MAP_ZOOM_DEGREES")
     map_width: int = Field(default=1200, alias="MAP_WIDTH")
     map_height: int = Field(default=675, alias="MAP_HEIGHT")

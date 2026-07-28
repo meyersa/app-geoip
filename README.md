@@ -38,6 +38,15 @@ docker run --rm -p 8000:8000 \
   GeoIP
 ```
 
+The Dockerfile exposes four named stages:
+
+```bash
+docker build --target deps -t GeoIP-deps .
+docker build --target dev -t GeoIP-dev .
+docker build --target test -t GeoIP-test .
+docker build --target runtime -t GeoIP .
+```
+
 The image installs dependencies from `poetry.lock` and runs Granian:
 
 ```bash
@@ -83,6 +92,8 @@ Map rendering uses Natural Earth vector data. On startup, the app checks/downloa
 | NATURAL_EARTH_COUNTRIES_URL | Countries shapefile zip URL; defaults to Natural Earth 1:50m countries              | No       |
 | NATURAL_EARTH_REGIONS_URL   | States/provinces shapefile zip URL; defaults to Natural Earth 1:50m admin-1 regions | No       |
 | NATURAL_EARTH_LAKES_URL     | Lakes shapefile zip URL; defaults to Natural Earth 1:50m lakes                      | No       |
+| MAP_IMAGE_CACHE_DIR         | Generated PNG cache directory; defaults to `/data/GeoIP/maps`                       | No       |
+| MAP_IMAGE_CACHE_TTL_SECONDS | Generated PNG cache TTL in seconds; defaults to `86400`                            | No       |
 | MAP_ZOOM_DEGREES            | Approximate latitude span around the point; defaults to `12.0`                      | No       |
 | MAP_WIDTH                   | Integer from `1` to `1280`; defaults to `1200`                                      | No       |
 | MAP_HEIGHT                  | Integer from `1` to `1280`; defaults to `675`                                       | No       |
@@ -94,6 +105,8 @@ MAXMIND_ID=your_account_id
 MAXMIND_KEY=your_license_key
 MAXMIND_CACHE_DIR=/data/GeoIP/maxmind
 NATURAL_EARTH_CACHE_DIR=/data/GeoIP/natural-earth
+MAP_IMAGE_CACHE_DIR=/data/GeoIP/maps
+MAP_IMAGE_CACHE_TTL_SECONDS=86400
 MAP_ZOOM_DEGREES=12
 LOG_LEVEL=INFO
 ```
@@ -105,6 +118,7 @@ For local testing, point the caches at `/tmp`:
 ```env
 MAXMIND_CACHE_DIR=/tmp/GeoIP/maxmind
 NATURAL_EARTH_CACHE_DIR=/tmp/GeoIP/natural-earth
+MAP_IMAGE_CACHE_DIR=/tmp/GeoIP/maps
 ```
 
 The default Natural Earth downloads are small public-domain shapefiles: countries, internal administrative divisions, and lakes. They are detailed enough to show the part of the world and state/province-level context without bundling street maps.
