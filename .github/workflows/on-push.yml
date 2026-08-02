@@ -11,4 +11,4 @@ permissions:
 
 jobs:
   checks:
-    uses: meyerstk/iac-ci/.github/workflows/reusable-on-push.yml@main
+    uses: meyersa/iac-ci/.github/workflows/reusable-on-push.yml@main

@@ -14,5 +14,5 @@ permissions:
 
 jobs:
   automerge:
-    uses: meyerstk/iac-ci/.github/workflows/reusable-automerge.yml@main
+    uses: meyersa/iac-ci/.github/workflows/reusable-automerge.yml@main
     secrets: inherit
